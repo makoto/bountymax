@@ -36,9 +36,14 @@ export default class Connector{
 
   }
 
-  register(name, targetAddress, bountyAddress){
+  register({name, targetAddress, bountyAddress, reward}){
     console.log("REGISTERING")
-    this.contract.register.sendTransaction(name, targetAddress, bountyAddress, {from:this.account})
+    this.contract.register.sendTransaction(
+      name,
+      targetAddress,
+      bountyAddress,
+      {from:this.account, value:reward}
+    )
   }
 
   exploit(targetAddress, bountyAddress, exploitAddress){

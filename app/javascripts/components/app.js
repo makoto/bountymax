@@ -3,17 +3,10 @@ import ReactDOM from 'react-dom';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
 import Avatar from 'material-ui/Avatar';
 import AppBar from 'material-ui/AppBar';
-import {List, ListItem} from 'material-ui/List';
-import Paper from 'material-ui/Paper';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import TextField from 'material-ui/TextField';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
 import Bounties from './bounties';
+import Register from './register';
 
 const App = (props) => (
   <MuiThemeProvider muiTheme={getMuiTheme()}>
@@ -31,21 +24,7 @@ const App = (props) => (
       />
       <div className='container'>
         <Bounties connector = {props.connector} />
-        <Paper zDepth={1} style={{height:'200px', padding:'5px'}}>
-          <h2>Add new Bounty</h2>
-          <TextField
-            hintText="Target contract address"
-          />
-          <TextField
-            hintText="Bounty contract address"
-          />
-          <TextField
-            hintText="Reward in ETH"
-          />
-          <FloatingActionButton style={{position: 'absolute', right: '15px'}}>
-            <ContentAdd />
-          </FloatingActionButton>
-        </Paper>
+        <Register connector = {props.connector} />
       </div>
     </div>
   </MuiThemeProvider>

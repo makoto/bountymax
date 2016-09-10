@@ -34,7 +34,6 @@ window.onload = function() {
       'ready': (c) => {
         let address = '0xbfa2ecc441a9ea50a461f497d415a3ddfdd802e5';
         let name = (new Date()).toString();
-        c.register(name, address, address)
         console.log('ready to send transactions')
       }
     })
