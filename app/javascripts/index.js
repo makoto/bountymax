@@ -25,7 +25,7 @@ function setup(){
 window.onload = function() {
   setup().then(({provider, web3}) => {
     web3.setProvider(provider);
-    let contract = MetaCoin.deployed();
+    let contract = Bountymax.deployed();
     injectTapEventPlugin();
     ReactDOM.render(
       <App contract={contract}/>,
