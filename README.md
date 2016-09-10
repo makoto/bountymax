@@ -30,3 +30,11 @@ truffle server
 ```
 
 - Go to http://localhost:8080/
+
+
+## TODO
+
+- Hook into exploit event
+- Show all bounties
+- Add validation on blank, and address type.
+- Integrate Reuter's Identity
