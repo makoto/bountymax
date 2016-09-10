@@ -1,0 +1,39 @@
+Available Accounts
+==================
+(0) 0xc1ba4318b7426b2c11ff6b39daff63162687eef4
+(1) 0x2e4fc8e46392851918313167772642fae361e1e2
+(2) 0xc7ec837908db348ee62b65ca5306fb520eccb211
+(3) 0x90fd50e65907b675546906f87b65aedaa5d2dbde
+(4) 0x52db4dd50bb3d0e1a3969e1fa1fcf8abba889009
+(5) 0xa702ab08452fdf4b240e6ec6c4475ae2bd814983
+(6) 0xcef902b474f54371495f34ee9da705a200934bab
+(7) 0x081b4d2e598c07d5deedc879017c62f0c8d7c896
+(8) 0x7d7cd6dcf425bb22948ac1c737cde517f19c8262
+(9) 0x98a37ee8900c780b117531331d26d42eb1da4997
+
+var bountyRegisteredEvent = contract.BountyRegistered({});
+bountyRegisteredEvent.watch(function(err, result) {
+  if(err){console.log('err', err)}
+  console.log('bountyRegisteredEvent', result.args)
+  event.stopWatching();
+});
+
+var contract = Bountymax.deployed();
+
+// watch events
+var evt = contract.BountyRegistered({});
+evt.watch(function(err,result) { console.log('BountyRegistered', result.args); });
+
+var claimed = contract.BountyClaimed({});
+claimed.watch(function(err,result) { console.log('BountyClaimed', result.args); });
+
+var target = '0x98a37ee8900c780b117531331d26d42eb1da4997';
+var invariant = '0x7d7cd6dcf425bb22948ac1c737cde517f19c8262';
+var hunter = '0xcef902b474f54371495f34ee9da705a200934bab';
+var exploit = '0x52db4dd50bb3d0e1a3969e1fa1fcf8abba889009';
+
+// function register(string name, address target, address invariant) public {
+contract.register.sendTransaction("name", target, invariant, {from: hunter, value: 100});
+
+// function exploit(address target, address exploit) public {
+contract.exploit.sendTransaction(target, exploit, {from: hunter});

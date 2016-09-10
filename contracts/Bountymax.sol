@@ -38,7 +38,7 @@ contract Bountymax {
     BountyRegistered(name, target, invariant, msg.value);
   }
 
-  function exploit(address target, address bounty, address exploit) public {
+  function exploit(address target, address exploit) public {
       // todo: check if bounty already claimed?
       // for now just simulate that it succeeded
       bytes32 requestId = 0; // todo: query oraclize here
