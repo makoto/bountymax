@@ -8,13 +8,12 @@ import Avatar from 'material-ui/Avatar';
 import AppBar from 'material-ui/AppBar';
 import {List, ListItem} from 'material-ui/List';
 import Paper from 'material-ui/Paper';
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-import Exploit from './exploit';
+import Bounties from './bounties';
 
 const App = (props) => (
   <MuiThemeProvider muiTheme={getMuiTheme()}>
@@ -31,30 +30,7 @@ const App = (props) => (
         }
       />
       <div className='container'>
-        <Paper zDepth={1} style={{height:'500px'}}>
-          <Table>
-            <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-              <TableRow>
-                <TableHeaderColumn >Address</TableHeaderColumn>
-                <TableHeaderColumn >Reward</TableHeaderColumn>
-                <TableHeaderColumn ></TableHeaderColumn>
-              </TableRow>
-            </TableHeader>
-            <TableBody displayRowCheckbox={false}>
-              <TableRow>
-                <TableRowColumn>
-                  1234
-                </TableRowColumn>
-                <TableRowColumn>
-                  1 ETH
-                </TableRowColumn>
-                <TableRowColumn>
-                  <Exploit/>
-                </TableRowColumn>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </Paper>
+        <Bounties connector = {props.connector} />
         <Paper zDepth={1} style={{height:'200px', padding:'5px'}}>
           <h2>Add new Bounty</h2>
           <TextField
