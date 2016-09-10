@@ -30,7 +30,3 @@ truffle server
 ```
 
 - Go to http://localhost:8080/
-
-Then you should see the template like this
-
-![Template](doc/template.png)
