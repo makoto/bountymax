@@ -31,12 +31,21 @@ contract Bountymax is usingOraclize {
     address hunter;
   }
 
+  uint8 feePercentage;
+  uint fees;
+  address constant feeCollector = 0x9e3561cabf084dff31cab2fd89eafd9f359467b4; // todo: populate with collection address we have the PK for...
+
   string host;
   mapping (address => Bounty) public bounties;
   mapping (bytes32 => ExploitRequest) public exploitRequests;
 
   function Bountymax() {
     host = "http://sandbox.bountymax.com/";
+    feePercentage = 5;
+  }
+
+  function setFeePercentage(uint8 percentage) public {
+    feePercentage = percentage;
   }
 
   /// called by dApp owner to register a contract with a bounty for hacking
@@ -71,18 +80,28 @@ contract Bountymax is usingOraclize {
     ExploitRequest exploit = exploitRequests[requestId];
     // todo: remove exploit request?
     if (sha3(result) == sha3("true")) {
+      // pay bountymax a fee
+      uint fee = reward / 100 * feePercentage;
+      fees += fee;
 
       // use withdrawal pattern to avoid reentrancy bug
       uint reward = bounties[exploit.target].reward;
       bounties[exploit.target].reward = 0;
 
-      if (exploit.hunter.send(reward)) {
+      if (exploit.hunter.send(reward - fee)) {
         BountyClaimed({target: exploit.target, hunter: exploit.hunter, amount: reward});
       } else {
         bounties[exploit.target].reward = reward;
       }
     } else {
       ExploitFailed({exploit: exploit.exploit, target: exploit.target});
+    }
+  }
+
+  function withdrawFees() public {
+    if (msg.sender == feeCollector) {
+      if (!feeCollector.send(fees)) throw;
+      fees = 0;
     }
   }
 
