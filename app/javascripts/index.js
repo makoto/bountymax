@@ -28,15 +28,16 @@ window.onload = function() {
     web3.setProvider(provider);
     Bountymax.setProvider(provider);
     let contract = Bountymax.deployed();
+
     let connector = new Connector(web3, contract);
     connector.on({
-      'ready': (c) => { console.log('ready to send transactions') }
+      'ready': (c) => {
+        let address = '0xbfa2ecc441a9ea50a461f497d415a3ddfdd802e5';
+        let name = (new Date()).toString();
+        c.register(name, address, address)
+        console.log('ready to send transactions')
+      }
     })
-
-    // address = '0xbfa2ecc441a9ea50a461f497d415a3ddfdd802e5'
-    // c.register(address, address)
-    // c.getName().then((name)=> {console.log('name', name)
-    // c.getName().then((name)=> {console.log('name', name)
 
     injectTapEventPlugin();
     ReactDOM.render(
