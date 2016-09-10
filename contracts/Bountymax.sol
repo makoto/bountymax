@@ -15,7 +15,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-contract Bountymax {
+import "OraclizeI.sol";
+
+contract Bountymax is usingOraclize {
   struct Bounty {
     string name;
     address target;
@@ -29,31 +31,43 @@ contract Bountymax {
     address hunter;
   }
 
+  string host;
   mapping (address => Bounty) public bounties;
   mapping (bytes32 => ExploitRequest) public exploitRequests;
 
+  function Bountymax() {
+    host = "http://sandbox.bountymax.com/";
+  }
+
+  /// called by dApp owner to register a contract with a bounty for hacking
   function register(string name, address target, address invariant) public {
     // todo: avoid overwriting existing bounty?
     bounties[target] = Bounty({name: name, target: target, invariant: invariant, reward: msg.value});
     BountyRegistered(name, target, invariant, msg.value);
   }
 
+  /// called by a bounty 'hunter' with an exploit to test against the contract
   function exploit(address target, address exploit) public {
-      // todo: check if bounty already claimed?
-      // for now just simulate that it succeeded
-      bytes32 requestId = 0; // todo: query oraclize here
+    // todo: check if bounty already claimed?
+    address invariant = bounties[target].invariant;
+    string memory t = toString(target);
+    string memory b = toString(invariant);
+    string memory e = toString(exploit);
+    string memory url = strConcat(host, "?target=", t, "&bounty=", b);
+    url = strConcat(url, "&exploit=", e);
 
-      // so we can pay the hunter if it succeeds
-      exploitRequests[requestId] = ExploitRequest({exploit: exploit, target: target, hunter: msg.sender});
+    // QUERY ORACLIZE
+    bytes32 requestId = oraclize_query("URL", url);
 
-      // call the callback directly for now
-      // todo: remove this call directly to callback with call to oraclize
-      __callback(requestId, "true");
+    // so we can pay the hunter if it succeeds
+    exploitRequests[requestId] = ExploitRequest({exploit: exploit, target: target, hunter: msg.sender});
   }
 
+  /// called by oraclize with result of exploit from sandbox
+  /// result should be "true" (exploit succeeded - pay reward) or "false" (exploit failed)
   function __callback(bytes32 requestId, string result) {
-    // todo: add this back once we add in oraclise API contract
-    /*if (msg.sender != oraclize_cbAddress()) throw;*/
+    if (msg.sender != oraclize_cbAddress()) throw;
+
     ExploitRequest exploit = exploitRequests[requestId];
     // todo: remove exploit request?
     if (sha3(result) == sha3("true")) {
@@ -89,4 +103,12 @@ contract Bountymax {
     address exploit,
     address target
   );
+
+  // helpers
+  function toString(address x) returns (string) {
+    bytes memory b = new bytes(20);
+    for (uint i = 0; i < 20; i++)
+        b[i] = byte(uint8(uint(x) / (2**(8*(19 - i)))));
+    return string(b);
+  }
 }
