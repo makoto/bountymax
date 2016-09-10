@@ -14,6 +14,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import Exploit from './exploit';
 
 const App = (props) => (
   <MuiThemeProvider muiTheme={getMuiTheme()}>
@@ -48,7 +49,7 @@ const App = (props) => (
                   1 ETH
                 </TableRowColumn>
                 <TableRowColumn>
-                  <RaisedButton label="Exploit" secondary={true} />
+                  <Exploit/>
                 </TableRowColumn>
               </TableRow>
             </TableBody>
