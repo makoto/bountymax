@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import App from './components/app';
+import Connector from './connector';
 
 function setup(){
   return new Promise(function(resolve,reject){
@@ -25,10 +26,21 @@ function setup(){
 window.onload = function() {
   setup().then(({provider, web3}) => {
     web3.setProvider(provider);
+    Bountymax.setProvider(provider);
     let contract = Bountymax.deployed();
+    let connector = new Connector(web3, contract);
+    connector.on({
+      'ready': (c) => { console.log('ready to send transactions') }
+    })
+
+    // address = '0xbfa2ecc441a9ea50a461f497d415a3ddfdd802e5'
+    // c.register(address, address)
+    // c.getName().then((name)=> {console.log('name', name)
+    // c.getName().then((name)=> {console.log('name', name)
+
     injectTapEventPlugin();
     ReactDOM.render(
-      <App contract={contract}/>,
+      <App connector={connector}/>,
       document.getElementById('app')
     );
   })
