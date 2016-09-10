@@ -11,7 +11,8 @@ export default class Bounties extends React.Component {
   }
 
   componentDidMount(){
-    let bountyRegisteredEvent = this.props.connector.contract.BountyRegistered({fromBlock:'earliest'});
+    let bountyRegisteredEvent = this.props.connector.contract.BountyRegistered();
+    console.log('start watching')
     bountyRegisteredEvent.watch((err, result) => {
       if(err){console.log('err', err)}
       console.log('bountyRegisteredEvent', result.args)
@@ -38,7 +39,7 @@ export default class Bounties extends React.Component {
             {bounty.reward.toString()}
           </TableRowColumn>
           <TableRowColumn>
-            <Exploit/>
+            <Exploit invariantAddress={bounty.invariant} connector={this.props.connector}/>
           </TableRowColumn>
         </TableRow>
       )
@@ -64,6 +65,3 @@ export default class Bounties extends React.Component {
     )
   }
 }
-
-//
-//

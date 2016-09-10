@@ -42,7 +42,7 @@ class Register extends React.Component {
 
   handleBountyAddress(e) {
     this.setState({
-      targetAddress: e.target.value,
+      bountyAddress: e.target.value,
     });
   }
 
