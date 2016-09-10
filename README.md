@@ -1,4 +1,4 @@
-# Bountifier
+# BountyMax
 
 ## Prerequisite
 
