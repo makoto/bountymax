@@ -38,7 +38,7 @@ export default class Bounties extends React.Component {
             {bounty.deposit.toString()}
           </TableRowColumn>
           <TableRowColumn>
-            <Exploit invariantAddress={bounty.invariant} connector={this.props.connector}/>
+            <Exploit targetAddress={bounty.target} invariantAddress={bounty.invariant} connector={this.props.connector}/>
           </TableRowColumn>
         </TableRow>
       )
