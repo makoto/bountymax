@@ -39,6 +39,10 @@ window.onload = function() {
       console.log('allEvents',data.event, data.args)
       let message;
       switch (data.event) {
+        case 'ExploitSucceeded':
+          message = `Successfully exploited ${data.args.amount.toNumber()}. Withdraw it now!`;
+          connector.emitter.emit('notification', {status:'success', message: message});
+          break;
         case 'BountyClaimed':
           // message = `Congratulation! you won ${data.args.amount.toNumber()}`
           message = `Congratulation! you successfully exploited`;

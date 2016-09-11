@@ -19,6 +19,9 @@ export default class Activity extends React.Component {
     contract.allEvents({fromBlock:0}, (error, data) => {
       let message;
       switch (data.event) {
+        case 'ExploitSucceeded':
+          message = `successfully exploited ${data.args.amount.toNumber()}. Withdraw it now!`;
+          break;
         case 'BountyClaimed':
           message = `successfully claimed ${data.args.amount.toNumber()}`;
           break;
@@ -29,7 +32,7 @@ export default class Activity extends React.Component {
           message = `registered ${data.args.name} contract with deposit of ${data.args.deposit.toNumber()}`;
           break;
         default:
-          message = '';
+          message = data.event;
           break;
       }
 
