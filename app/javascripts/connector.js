@@ -4,10 +4,10 @@ const emitter = new EventEmitter();
 
 export default class Connector{
   constructor(web3, contract) {
-    this.web3 = web3
-    this.contract = contract
+    this.web3 = web3;
+    this.contract = contract;
+    this.emitter = emitter;
     this.getAccount().then((account) =>{
-      console.log("GOT ACCOUNT")
       this.account = account;
       emitter.emit('ready', this)
     })
