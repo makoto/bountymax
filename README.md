@@ -38,3 +38,4 @@ truffle server
 - Show all bounties
 - Add validation on blank, and address type.
 - Integrate Reuter's Identity
+- Convert from Wai to Ether
