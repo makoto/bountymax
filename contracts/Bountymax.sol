@@ -30,11 +30,15 @@ contract Bountymax {
   }
 
   mapping (address => Bounty) public bounties;
+  mapping (uint => address) public bountiesIndex;
+  uint public numBounties;
   mapping (bytes32 => ExploitRequest) public exploitRequests;
 
   function register(string name, address target, address invariant) public {
     // todo: avoid overwriting existing bounty?
     bounties[target] = Bounty({name: name, target: target, invariant: invariant, reward: msg.value});
+    numBounties++;
+    bountiesIndex[numBounties] = target;
     BountyRegistered(name, target, invariant, msg.value);
   }
 

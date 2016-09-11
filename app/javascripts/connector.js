@@ -32,8 +32,30 @@ export default class Connector{
     })
   }
 
-  getBounties() {
-
+  getBounties(callback){
+    let contract = this.contract;
+    contract.numBounties.call().then(value => {
+      let bountiesArray = []
+      for (var i = 1; i <= value.toNumber(); i++) {
+        bountiesArray.push(i);
+      }
+      debugger
+      Promise.all(bountiesArray.map(index => {
+        return contract.bountiesIndex.call(index).then(address => {
+          return contract.bounties.call(address);
+        })
+      })).then(function(bounties){
+        return bounties.map(bounty => {
+          var object =  {
+            name: bounty[0],
+            target: bounty[1],
+            invariant: bounty[2],
+            reward: bounty[3],
+          }
+          return object
+        })
+      }).then(bounty => { if(bounty) callback(bounty); })
+    })
   }
 
   register({name, targetAddress, bountyAddress, reward}){

@@ -36,7 +36,7 @@ window.onload = function() {
       }
     })
     contract.allEvents({}, function(error, data) {
-      console.log('allEvents', data.args)
+      console.log('allEvents',data.event, data.args)
       let message;
       switch (data.event) {
         case 'BountyClaimed':
