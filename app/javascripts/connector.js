@@ -39,7 +39,6 @@ export default class Connector{
       for (var i = 1; i <= value.toNumber(); i++) {
         bountiesArray.push(i);
       }
-      debugger
       Promise.all(bountiesArray.map(index => {
         return contract.bountiesIndex.call(index).then(address => {
           return contract.bounties.call(address);
