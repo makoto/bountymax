@@ -105,10 +105,10 @@ contract Bountymax is usingOraclize {
     bytes32 bountyID = sha3(strConcat(toString(target), toString(invariant)));
 
     // if the bounty doesn't exist, throw
-    if (bounties[bountyID].owner == 0x0) throw;
+    /*if (bounties[bountyID].owner == 0x0) throw;*/
 
     // if the bounty is already claimed, throw
-    if (bounties[bountyID].hunter != 0x0) throw;
+    /*if (bounties[bountyID].hunter != 0x0) throw;*/
 
     // build the oraclize URL
     string memory t = toString(target);
@@ -119,7 +119,6 @@ contract Bountymax is usingOraclize {
 
     // QUERY ORACLIZE
     bytes32 requestID = oraclize_query("URL", url);
-
     // so we can pay the hunter if it succeeds
     requests[requestID] = Request({exploit: exploit, invariant: invariant, target: target, hunter: msg.sender});
 
