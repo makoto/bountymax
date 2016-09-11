@@ -35,7 +35,12 @@ truffle server
 ## TODO
 
 - Hook into exploit event
-- Show all bounties
 - Add validation on blank, and address type.
 - Integrate Reuter's Identity
 - Convert from Wai to Ether
+- Clear form on submit
+
+### Contracts security
+
+- Do not allow empty address(it defaults to 0x0000000000000000000000000000000000000000)
+- Do not allow duplicate target address (or index by invariant)
