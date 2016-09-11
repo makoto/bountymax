@@ -20,7 +20,7 @@ class Register extends React.Component {
       name: '',
       targetAddress: '',
       bountyAddress: '',
-      reward: '0'
+      deposit: '0'
     };
   }
 
@@ -46,9 +46,9 @@ class Register extends React.Component {
     });
   }
 
-  handleReward(e){
+  handleDeposit(e){
     this.setState({
-      reward: e.target.value,
+      deposit: e.target.value,
     });
   }
 
@@ -74,9 +74,9 @@ class Register extends React.Component {
           onChange={this.handleBountyAddress.bind(this)}
         />
         <TextField
-          hintText="Reward in ETH"
-          value={this.state.reward}
-          onChange={this.handleReward.bind(this)}
+          hintText="Deposit in ETH"
+          value={this.state.deposit}
+          onChange={this.handleDeposit.bind(this)}
         />
         <FloatingActionButton
           onClick={this.handleRegister.bind(this)}

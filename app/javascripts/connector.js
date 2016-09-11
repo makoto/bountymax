@@ -50,7 +50,7 @@ export default class Connector{
             name: bounty[0],
             target: bounty[1],
             invariant: bounty[2],
-            reward: bounty[3] || 0,
+            deposit: bounty[3] || 0,
           }
           return object
         })
@@ -58,12 +58,12 @@ export default class Connector{
     })
   }
 
-  register({name, targetAddress, bountyAddress, reward}){
+  register({name, targetAddress, bountyAddress, deposit}){
     this.contract.register.sendTransaction(
       name,
       targetAddress,
       bountyAddress,
-      {from:this.account, value:reward}
+      {from:this.account, value:deposit}
     )
   }
 

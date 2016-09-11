@@ -26,7 +26,7 @@ export default class Activity extends React.Component {
           message = `failed to claim`
           break;
         case 'BountyRegistered':
-          message = `registered ${data.args.name} contract with reward of ${data.args.reward.toNumber()}`;
+          message = `registered ${data.args.name} contract with deposit of ${data.args.deposit.toNumber()}`;
           break;
         default:
           message = '';
