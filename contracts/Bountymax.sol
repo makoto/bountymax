@@ -41,7 +41,7 @@ contract Bountymax is usingOraclize {
   uint8 feePercentage;
   uint feesCollected;
 
-  uint numBounties;
+  uint public numBounties;
   mapping (uint => bytes32) public bountyIndex;
   mapping (bytes32 => Bounty) public bounties;
   mapping (bytes32 => Request) public requests;
