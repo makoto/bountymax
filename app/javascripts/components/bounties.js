@@ -11,12 +11,13 @@ export default class Bounties extends React.Component {
   }
 
   componentDidMount(){
-    let bountyRegisteredEvent = this.props.connector.contract.BountyRegistered();
-    bountyRegisteredEvent.watch((err, result) => {
-      if(err){console.log('err', err)}
+    this.props.connector.contract.allEvents({fromBlock:'latest'}, (error, data) => {
       this.props.connector.getBounties((bounties) => {
         this.setState({bounties:bounties})
       })
+    })
+    this.props.connector.getBounties((bounties) => {
+      this.setState({bounties:bounties})
     })
   }
 

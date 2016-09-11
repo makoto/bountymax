@@ -45,11 +45,12 @@ export default class Connector{
         })
       })).then(function(bounties){
         return bounties.map(bounty => {
+          console.log('getBounties')
           var object =  {
             name: bounty[0],
             target: bounty[1],
             invariant: bounty[2],
-            reward: bounty[3],
+            reward: bounty[3] || 0,
           }
           return object
         })
