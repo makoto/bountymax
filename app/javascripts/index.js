@@ -40,7 +40,7 @@ window.onload = function() {
       let message;
       switch (data.event) {
         case 'ExploitSucceeded':
-          message = `Successfully exploited ${data.args.amount.toNumber()}. Withdraw it now!`;
+          message = `Successfully exploited. Withdraw it now!`;
           connector.emitter.emit('notification', {status:'success', message: message});
           break;
         case 'BountyClaimed':

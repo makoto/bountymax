@@ -17,13 +17,14 @@ export default class Activity extends React.Component {
     let contract = this.props.connector.contract;
     let activities = this.state.activities;
     contract.allEvents({fromBlock:0}, (error, data) => {
+      console.log('allEvents', data.event);
       let message;
       switch (data.event) {
         case 'ExploitSucceeded':
-          message = `successfully exploited ${data.args.amount.toNumber()}. Withdraw it now!`;
+          message = `successfully exploited. Withdraw it now!`;
           break;
         case 'BountyClaimed':
-          message = `successfully claimed ${data.args.amount.toNumber()}`;
+          message = `successfully claimed`;
           break;
         case 'ExploitFailed':
           message = `failed to claim`
