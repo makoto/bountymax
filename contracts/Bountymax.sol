@@ -25,6 +25,8 @@ contract Bountymax is usingOraclize {
     address target;
     address invariant;
     uint deposit;
+    address hunter;
+    address exploit;
   }
 
   struct Request {
@@ -34,19 +36,20 @@ contract Bountymax is usingOraclize {
     address hunter;
   }
 
+  string host;
   address owner;
   uint8 feePercentage;
-  uint collectedFees;
-  address constant feeCollector = 0x9e3561cabf084dff31cab2fd89eafd9f359467b4; // todo: populate with collection address we have the PK for...
+  uint feesCollected;
 
-  string host;
+  uint numBounties;
+  mapping (uint => bytes32) public bountyIndex;
   mapping (bytes32 => Bounty) public bounties;
   mapping (bytes32 => Request) public requests;
 
-  function Bountymax() {
+  function Bountymax(string oraclizeHost, uint8 initialFee) {
     owner = msg.sender;
-    host = "http://sandbox.bountymax.com/";
-    feePercentage = 5;
+    host = oraclizeHost;
+    feePercentage = initialFee;
   }
 
   function setFeePercentage(uint8 newFee) public {
@@ -56,10 +59,10 @@ contract Bountymax is usingOraclize {
     FeeChange(oldFee, newFee);
   }
 
-  function withdrawFees() public {
-    if (!owner.send(collectedFees)) throw;
-    FeeWithdrawal(collectedFees);
-    collectedFees = 0;
+  function withdrawFeesCollected() public {
+    if (!owner.send(feesCollected)) throw;
+    FeeWithdrawal(feesCollected);
+    feesCollected = 0;
   }
 
   /// called by dApp owner to register a contract with a bounty for hacking
@@ -74,7 +77,8 @@ contract Bountymax is usingOraclize {
     if (bounties[bountyID].target != 0x0) throw;
 
     // register the new bounty
-    bounties[bountyID] = Bounty({name: name, owner: msg.sender, target: target, invariant: invariant, deposit: msg.value});
+    bountyIndex[numBounties++] = bountyID;
+    bounties[bountyID] = Bounty({name: name, owner: msg.sender, target: target, invariant: invariant, deposit: msg.value, hunter: 0x0, exploit: 0x0});
     BountyRegistered(name, msg.sender, target, invariant, msg.value);
   }
 
@@ -89,10 +93,9 @@ contract Bountymax is usingOraclize {
     if (bounties[bountyID].owner != msg.sender) throw;
 
     // cancel the bounty
-    string name = bounties[bountyID].name;
-    uint deposit = bounties[bountyID].deposit;
+    Bounty bounty = bounties[bountyID];
+    BountyCanceled(bounty.name, msg.sender, target, invariant, bounty.deposit);
     delete bounties[bountyID];
-    BountyCanceled(name, msg.sender, target, invariant, deposit);
   }
 
   /// called by a bounty 'hunter' with an exploit to test against the contract
@@ -103,6 +106,9 @@ contract Bountymax is usingOraclize {
 
     // if the bounty doesn't exist, throw
     if (bounties[bountyID].owner == 0x0) throw;
+
+    // if the bounty is already claimed, throw
+    if (bounties[bountyID].hunter != 0x0) throw;
 
     // build the oraclize URL
     string memory t = toString(target);
@@ -129,9 +135,14 @@ contract Bountymax is usingOraclize {
     // check if the callback sender is actually oraclize
     if (msg.sender != oraclize_cbAddress()) throw;
 
-    // get the corresponding request & bounty
+    // get the corresponding request and bountyID
     Request request = requests[requestID];
     bytes32 bountyID = sha3(strConcat(toString(request.target), toString(request.invariant)));
+
+    // if the bounty has already be claimed, this callback is too late, throw
+    if (bounties[bountyID].hunter != 0x0) throw;
+
+    // get the bounty corresponding to the request
     Bounty bounty = bounties[bountyID];
 
     // if the return is not true, then the exploit failed
@@ -141,17 +152,33 @@ contract Bountymax is usingOraclize {
       return;
     }
 
-    // calculate the bounty fee and reward
+    // register a cash out request
+    bounty.hunter = request.hunter;
+    bounty.exploit = request.exploit;
+    ExploitSucceeded(bounty.name, bounty.owner, bounty.target, bounty.invariant, request.exploit, request.hunter);
+    delete requests[requestID];
+  }
+
+  // withdraw allows a hunter to get his reward after a successful exploit
+  function withdraw(address target, address invariant) public {
+
+    // generate unique ID for target & invariant to check if bounty exists
+    bytes32 bountyID = sha3(strConcat(toString(target), toString(invariant)));
+
+    // if the bounty doesn't exist, throw
+    if (bounties[bountyID].hunter != msg.sender) throw;
+
+    // calculate the reward
+    Bounty bounty = bounties[bountyID];
     uint fee = bounty.deposit / 100 * feePercentage;
     uint reward = bounty.deposit - fee;
-    collectedFees += fee;
 
-    // send the reward to the hunter
-    if (!request.hunter.send(reward)) {
-      throw;
-    }
-    ExploitSucceeded(bounty.name, bounty.owner, bounty.target, bounty.invariant, request.exploit, request.hunter, reward, fee);
-    delete requests[requestID];
+    // send the reward to the claimer
+    if (!msg.sender.send(reward)) throw;
+
+    // collect our fee
+    feesCollected += fee;
+    BountyClaimed(bounty.name, bounty.owner, bounty.target, bounty.invariant, bounty.exploit, bounty.hunter, fee, reward);
   }
 
   event BountyRegistered (
@@ -159,7 +186,7 @@ contract Bountymax is usingOraclize {
     address owner,
     address target,
     address invariant,
-    uint reward
+    uint deposit
   );
 
   event BountyCanceled (
@@ -167,7 +194,18 @@ contract Bountymax is usingOraclize {
     address owner,
     address target,
     address invariant,
-    uint reward
+    uint deposit
+  );
+
+  event BountyClaimed (
+    string name,
+    address owner,
+    address target,
+    address invariant,
+    address exploit,
+    address hunter,
+    uint reward,
+    uint fee
   );
 
   event ExploitRequested (
@@ -194,11 +232,8 @@ contract Bountymax is usingOraclize {
     address target,
     address invariant,
     address exploit,
-    address hunter,
-    uint reward,
-    uint fee
+    address hunter
   );
-
 
   event FeeChange (
     uint oldFee,
