@@ -40,9 +40,9 @@ class Register extends React.Component {
     });
   }
 
-  handleBountyAddress(e) {
+  handleInvariantAddress(e) {
     this.setState({
-      bountyAddress: e.target.value,
+      invariantAddress: e.target.value,
     });
   }
 
@@ -70,8 +70,8 @@ class Register extends React.Component {
 
         <TextField
           hintText="Bounty contract address"
-          value={this.state.bountyAddress}
-          onChange={this.handleBountyAddress.bind(this)}
+          value={this.state.invariantAddress}
+          onChange={this.handleInvariantAddress.bind(this)}
         />
         <TextField
           hintText="Deposit in ETH"
