@@ -7,6 +7,7 @@ import Avatar from 'material-ui/Avatar';
 import AppBar from 'material-ui/AppBar';
 import Bounties from './bounties';
 import Register from './register';
+import Notification from './notification';
 
 const App = (props) => (
   <MuiThemeProvider muiTheme={getMuiTheme()}>
@@ -23,6 +24,7 @@ const App = (props) => (
         }
       />
       <div className='container'>
+        <Notification connector = {props.connector} />
         <Bounties connector = {props.connector} />
         <Register connector = {props.connector} />
       </div>
