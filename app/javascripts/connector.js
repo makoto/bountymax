@@ -48,9 +48,12 @@ export default class Connector{
           console.log('getBounties')
           var object =  {
             name: bounty[0],
-            target: bounty[1],
-            invariant: bounty[2],
-            deposit: bounty[3] || 0,
+            owner: bounty[1],
+            target: bounty[2],
+            invariant: bounty[3],
+            deposit: bounty[4],
+            hunter: bounty[5],
+            exploit: bounty[6]
           }
           return object
         })
