@@ -16,26 +16,6 @@ window.onload = function() {
     var web3;
   }
   connector.setup(web3);
-  connector.ready().then((connector) =>{
-    console.log('ready to send transactions')
-    connector.contract.allEvents({}, function(error, data) {
-      console.log('allEvents',data.event, data.args)
-      let message;
-      switch (data.event) {
-        case 'BountyClaimed':
-          message = `Congratulation! you successfully exploited`;
-          store.dispatch(addNotification({message, status: 'success'}))
-          break;
-        case 'ExploitFailed':
-          message = `Your exploitation did not work. Try again`
-          store.dispatch(addNotification({message, status: 'error'}))
-          break;
-        default:
-        store.dispatch(addNotification({message: data.event, status: 'info'}))
-      }
-    });
-  })
-
 
   const routes = (
     <Route path='/'>

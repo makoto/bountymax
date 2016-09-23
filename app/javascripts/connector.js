@@ -1,3 +1,7 @@
+import store from './store'
+import { setBounties } from './actions/bounties'
+import { addNotification } from './actions/notification'
+
 class Connector{
   constructor(web3, contract) {
     this._readyResolver = null;
@@ -20,11 +24,42 @@ class Connector{
     this.getAccount().then((account) =>{
       this.account = account;
     })
+    this.setupEvent()
     this._readyResolver(this);
   }
 
   ready() {
     return this._readyPromise;
+  }
+
+  setupEvent() {
+    let message;
+    this.contract.allEvents({}, (error, data) => {
+      switch (data.event) {
+        case 'BountyClaimed':
+          message = `Congratulation! you successfully exploited`;
+          store.dispatch(addNotification({message, status: 'success'}))
+          break;
+        case 'ExploitFailed':
+          message = `Your exploitation did not work. Try again`
+          store.dispatch(addNotification({message, status: 'error'}))
+          break;
+        case 'BountyRegistered':
+          store.dispatch(addNotification({message: data.event, status: 'info'}))
+          break;
+        default:
+          store.dispatch(addNotification({message: data.event, status: 'info'}))
+      }
+    })
+
+    this.contract.allEvents({fromBlock:0}, (error, data) => {
+      switch (data.event) {
+        case 'BountyRegistered':
+          this.getBounties((bounties) => store.dispatch(setBounties(bounties)))
+          break;
+        default:
+      }
+    })
   }
 
   getAccount(){

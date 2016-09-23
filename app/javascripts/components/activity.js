@@ -22,7 +22,6 @@ export default class Activity extends React.Component {
         let message;
         switch (data.event) {
           case 'BountyClaimed':
-            // message = `successfully claimed ${data.args.amount.toNumber()}`;
             message = `successfully claimed 1000`;
             break;
           case 'ExploitFailed':

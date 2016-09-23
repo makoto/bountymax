@@ -4,28 +4,12 @@ import Paper from 'material-ui/Paper';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import Exploit from './exploit';
 import connector from '../connector';
+import { connect } from 'react-redux'
 
-export default class Bounties extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {bounties:[]};
-  }
-
-  componentDidMount(){
-    connector.ready().then((c) => {
-      c.contract.allEvents({fromBlock:'latest'}, (error, data) => {
-        c.getBounties((bounties) => {
-          this.setState({bounties:bounties})
-        })
-      })
-      c.getBounties((bounties) => {
-        this.setState({bounties:bounties})
-      })
-    })
-  }
+class Bounties extends React.Component {
 
   render(){
-    let showBounties = this.state.bounties.map((bounty) => {
+    let showBounties = this.props.bounties.map((bounty) => {
       return(
         <TableRow>
           <TableRowColumn>
@@ -67,3 +51,5 @@ export default class Bounties extends React.Component {
     )
   }
 }
+
+export default connect(({ bounties }) => ({ bounties }))(Bounties)
