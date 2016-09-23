@@ -1,7 +1,3 @@
-import EventEmitter from 'events';
-
-const emitter = new EventEmitter();
-
 class Connector{
   constructor(web3, contract) {
     this._readyResolver = null;
@@ -21,7 +17,6 @@ class Connector{
 
     this.web3 = web3;
     this.contract = contract;
-    this.emitter = emitter;
     this.getAccount().then((account) =>{
       this.account = account;
     })
@@ -31,13 +26,6 @@ class Connector{
   ready() {
     return this._readyPromise;
   }
-
-  // on(listeners) {
-  //   for (let eventName in listeners){
-  //     console.log("eventName", eventName)
-  //     emitter.on(eventName, listeners[eventName]);
-  //   }
-  // }
 
   getAccount(){
     return new Promise((resolve,reject) =>{
