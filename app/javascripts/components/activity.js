@@ -4,46 +4,14 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import {List, ListItem} from 'material-ui/List';
 import connector from '../connector';
+import { connect } from 'react-redux'
 
-export default class Activity extends React.Component {
+class Activity extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false,
-      activities:[]
+      open: false
     };
-  }
-
-  componentDidMount(){
-    connector.ready().then((c) => {
-      let contract = c.contract;
-      let activities = this.state.activities;
-      contract.allEvents({fromBlock:0}, (error, data) => {
-        let message;
-        switch (data.event) {
-          case 'BountyClaimed':
-            message = `successfully claimed 1000`;
-            break;
-          case 'ExploitFailed':
-            message = `failed to claim`
-            break;
-          case 'BountyRegistered':
-            message = `registered ${data.args.name} contract with reward of ${data.args.reward.toNumber()}`;
-            break;
-          default:
-            message = '';
-            break;
-        }
-
-        activities.push({
-          event:data.event,
-          blockNumber:data.blockNumber,
-          address:data.address,
-          message:message
-        });
-        this.setState({activities: activities});
-      });
-    })
   }
 
   handleOpen(){
@@ -78,9 +46,9 @@ export default class Activity extends React.Component {
           <div>
             <List>
               {
-                this.state.activities.sort((a, b) => { return b.blockNumber - a.blockNumber }).map((a) => {
+                this.props.activities.sort((a, b) => { return b.blockNumber - a.blockNumber }).map((a, i) => {
                   return (
-                    <ListItem insetChildren={true} disabled={true}
+                    <ListItem insetChildren={true} disabled={true} key={i}
                       primaryText={
                         <p>At block {a.blockNumber}, {a.address} {a.message}</p>
                       }
@@ -95,3 +63,5 @@ export default class Activity extends React.Component {
     );
   }
 }
+
+export default connect(({ activities }) => ({ activities }))(Activity)

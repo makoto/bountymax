@@ -1,6 +1,7 @@
 import store from './store'
 import { setBounties } from './actions/bounties'
 import { addNotification } from './actions/notification'
+import { addActivity } from './actions/activities'
 
 class Connector{
   constructor(web3, contract) {
@@ -52,13 +53,32 @@ class Connector{
       }
     })
 
-    this.contract.allEvents({fromBlock:0}, (error, data) => {
+
+    this.contract.allEvents({ fromBlock: 0}, (error, data) => {
+      let message;
       switch (data.event) {
+        case 'BountyClaimed':
+          message = `successfully claimed 1000`;
+          break;
+        case 'ExploitFailed':
+          message = `failed to claim`
+          break;
         case 'BountyRegistered':
           this.getBounties((bounties) => store.dispatch(setBounties(bounties)))
+          message = `registered ${data.args.name} contract with reward of ${data.args.reward.toNumber()}`;
           break;
         default:
+          message = '';
+          break;
       }
+
+      let activity = {
+        event:data.event,
+        blockNumber:data.blockNumber,
+        address:data.address,
+        message:message
+      }
+      store.dispatch(addActivity(activity))
     })
   }
 

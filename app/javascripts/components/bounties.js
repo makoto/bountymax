@@ -9,9 +9,9 @@ import { connect } from 'react-redux'
 class Bounties extends React.Component {
 
   render(){
-    let showBounties = this.props.bounties.map((bounty) => {
+    let showBounties = this.props.bounties.map((bounty, i) => {
       return(
-        <TableRow>
+        <TableRow key={i}>
           <TableRowColumn>
             {bounty.name}
           </TableRowColumn>
