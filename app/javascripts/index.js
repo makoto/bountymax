@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import App from './components/app';
-import Connector from './connector';
+import connector from './connector';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router'
 import { Provider } from 'react-redux'
 import store from './store'
@@ -32,12 +32,11 @@ window.onload = function() {
     web3.setProvider(provider);
     Bountymax.setProvider(provider);
     let contract = Bountymax.deployed();
-    let connector = new Connector(web3, contract);
-    connector.on({
-      'ready': (c) => {
-        console.log('ready to send transactions')
-      }
+    connector.setup(web3, contract);
+    connector.ready().then((connector) =>{
+      console.log('ready to send transactions')
     })
+
     contract.allEvents({}, function(error, data) {
       console.log('allEvents',data.event, data.args)
       let message;
@@ -59,7 +58,13 @@ window.onload = function() {
     window.connector = connector;
     injectTapEventPlugin();
     ReactDOM.render(
-      <App connector={connector}/>,
+      <Provider store={store}>
+        <Router history={browserHistory}>
+          <Route path='/'>
+            <IndexRoute component={App}/>
+          </Route>
+        </Router>
+      </Provider>,
       document.getElementById('app')
     );
   })

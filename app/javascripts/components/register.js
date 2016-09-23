@@ -11,10 +11,12 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
+import connector from '../connector';
 
 class Register extends React.Component {
 
   constructor(props) {
+
     super(props);
     this.state = {
       name: '',
@@ -25,7 +27,7 @@ class Register extends React.Component {
   }
 
   handleRegister() {
-    this.props.connector.register(this.state)
+    connector.ready().then((c) => { c.register(this.state)})
   }
 
   handleName(e) {

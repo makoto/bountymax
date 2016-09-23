@@ -3,6 +3,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import {List, ListItem} from 'material-ui/List';
+import connector from '../connector';
 
 export default class Activity extends React.Component {
   constructor(props) {
@@ -14,34 +15,36 @@ export default class Activity extends React.Component {
   }
 
   componentDidMount(){
-    let contract = this.props.connector.contract;
-    let activities = this.state.activities;
-    contract.allEvents({fromBlock:0}, (error, data) => {
-      let message;
-      switch (data.event) {
-        case 'BountyClaimed':
-          // message = `successfully claimed ${data.args.amount.toNumber()}`;
-          message = `successfully claimed 1000`;
-          break;
-        case 'ExploitFailed':
-          message = `failed to claim`
-          break;
-        case 'BountyRegistered':
-          message = `registered ${data.args.name} contract with reward of ${data.args.reward.toNumber()}`;
-          break;
-        default:
-          message = '';
-          break;
-      }
+    connector.ready().then((c) => {
+      let contract = c.contract;
+      let activities = this.state.activities;
+      contract.allEvents({fromBlock:0}, (error, data) => {
+        let message;
+        switch (data.event) {
+          case 'BountyClaimed':
+            // message = `successfully claimed ${data.args.amount.toNumber()}`;
+            message = `successfully claimed 1000`;
+            break;
+          case 'ExploitFailed':
+            message = `failed to claim`
+            break;
+          case 'BountyRegistered':
+            message = `registered ${data.args.name} contract with reward of ${data.args.reward.toNumber()}`;
+            break;
+          default:
+            message = '';
+            break;
+        }
 
-      activities.push({
-        event:data.event,
-        blockNumber:data.blockNumber,
-        address:data.address,
-        message:message
+        activities.push({
+          event:data.event,
+          blockNumber:data.blockNumber,
+          address:data.address,
+          message:message
+        });
+        this.setState({activities: activities});
       });
-      this.setState({activities: activities});
-    });
+    })
   }
 
   handleOpen(){

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import Paper from 'material-ui/Paper';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import Exploit from './exploit';
+import connector from '../connector';
 
 export default class Bounties extends React.Component {
   constructor(props) {
@@ -11,13 +12,15 @@ export default class Bounties extends React.Component {
   }
 
   componentDidMount(){
-    this.props.connector.contract.allEvents({fromBlock:'latest'}, (error, data) => {
-      this.props.connector.getBounties((bounties) => {
+    connector.ready().then((c) => {
+      c.contract.allEvents({fromBlock:'latest'}, (error, data) => {
+        c.getBounties((bounties) => {
+          this.setState({bounties:bounties})
+        })
+      })
+      c.getBounties((bounties) => {
         this.setState({bounties:bounties})
       })
-    })
-    this.props.connector.getBounties((bounties) => {
-      this.setState({bounties:bounties})
     })
   }
 
@@ -38,7 +41,7 @@ export default class Bounties extends React.Component {
             {bounty.reward.toString()}
           </TableRowColumn>
           <TableRowColumn>
-            <Exploit invariantAddress={bounty.invariant} connector={this.props.connector}/>
+            <Exploit invariantAddress={bounty.invariant}/>
           </TableRowColumn>
         </TableRow>
       )

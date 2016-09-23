@@ -1,5 +1,6 @@
 import React from 'react';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
+import connector from '../connector';
 
 class Notification extends React.Component {
   constructor(props) {
@@ -10,8 +11,10 @@ class Notification extends React.Component {
 
   componentDidMount(){
     console.log('notification componentDidMount')
-    this.props.connector.emitter.on('notification', (obj) => {
-      NotificationManager[obj.status](obj.message);
+    connector.ready().then((c) => {
+      c.emitter.on('notification', (obj) => {
+        NotificationManager[obj.status](obj.message);
+      })
     })
   }
 
