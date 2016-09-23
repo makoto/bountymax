@@ -10,7 +10,15 @@ class Connector{
     });
   }
 
-  setup (web3, contract) {
+  setup (web3) {
+    let contract = Bountymax.deployed();
+    let url = "http://localhost:8545";
+    // mist loading proposal https://gist.github.com/frozeman/fbc7465d0b0e6c1c4c23
+    let provider = web3 ? web3.currentProvider : new Web3.providers.HttpProvider(url);
+    web3 = new Web3;
+    web3.setProvider(provider);
+    Bountymax.setProvider(provider);
+
     this.web3 = web3;
     this.contract = contract;
     this.emitter = emitter;
