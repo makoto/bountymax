@@ -5,6 +5,9 @@ import ReactDOM from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import App from './components/app';
 import Connector from './connector';
+import { Router, Route, IndexRoute, browserHistory } from 'react-router'
+import { Provider } from 'react-redux'
+import store from './store'
 
 function setup(){
   return new Promise(function(resolve,reject){
